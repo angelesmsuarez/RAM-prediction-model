@@ -1,0 +1,69 @@
+import pandas as pd
+import xml.etree.ElementTree as ET
+import os
+
+# --------------------------------------------
+# Función para cargar y combinar archivos XML y CSV
+# --------------------------------------------
+def cargar_y_combinardatos():
+    # Definir la ruta donde están los archivos XML
+    ruta_xml = "C:/Users/Dariana/Downloads/FAERS"
+    
+    # Lista para almacenar los DataFrames de cada archivo XML
+    df_list = []
+
+    # Iterar sobre todos los archivos XML en la carpeta especificada
+    for archivo in os.listdir(ruta_xml):
+        if archivo.endswith(".xml"):  # Filtrar solo archivos .xml
+            ruta_completa = os.path.join(ruta_xml, archivo)
+            
+            # Analizar el archivo XML
+            tree = ET.parse(ruta_completa)
+            root = tree.getroot()
+
+            # Extraer la información útil del XML y convertirla en un DataFrame
+            data = []
+            for elem in root.findall('registro'):  # Ajusta según tu XML
+                data.append({
+                    'columna1': elem.find('columna1').text,
+                    'columna2': elem.find('columna2').text
+                    # Añadir más columnas según sea necesario
+                })
+            
+            # Convertir datos extraídos a DataFrame y añadir a la lista
+            df_list.append(pd.DataFrame(data))
+    
+    # Combinar todos los DataFrames en uno solo
+    df_all = pd.concat(df_list, ignore_index=True)
+    
+    # Cargar el archivo CSV (si es necesario)
+    df_csv = pd.read_csv("ruta_del_archivo.csv")  # Ajusta el nombre del archivo CSV
+    
+    # Combinar los DataFrames de XML y CSV
+    df_combined = pd.concat([df_csv, df_all], ignore_index=True)
+
+    # Exportar los datos combinados a un nuevo archivo CSV
+    df_combined.to_csv("C:/Users/Dariana/Downloads/FAERS/faers_data_combined.csv", index=False)
+    print("Datos combinados exportados con éxito.")
+    
+    return df_combined
+
+# Identificación de variables
+def identificacion_de_variables(df):
+    # Mostrar las primeras filas para tener una vista inicial del dataset
+    print(df.head())
+
+    # Identificar las columnas del DataFrame
+    columnas = df.columns.tolist()
+    print("Columnas identificadas:", columnas)
+
+    # Verificar tipos de datos de las columnas y la cantidad de registros
+    print("\nInformación del DataFrame:")
+    df_info = df.info()
+    print(df_info)
+
+    return columnas
+
+# Ejecución del proceso
+df = cargar_y_combinardatos()  # Cargar y combinar datos
+columnas = identificacion_de_variables(df)  # Identificar variables
