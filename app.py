@@ -2,6 +2,12 @@ import streamlit as st
 import pandas as pd
 import joblib
 import re
+import requests
+import io
+
+url = "https://drive.google.com/uc?export=download&id=1A2B3C4D5E6F7G8H9I"  # <-- usa tu ID
+response = requests.get(url)
+df = pd.read_parquet(io.BytesIO(response.content))
 
 # 🔄 Cargar modelo y encoders
 model = joblib.load('modelo_ram_xgboost_afinado.pkl')
