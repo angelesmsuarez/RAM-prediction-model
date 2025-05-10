@@ -5,7 +5,7 @@ import re
 import requests
 import io
 
-url = "https://drive.google.com/uc?export=download&id=1A2B3C4D5E6F7G8H9I"  # <-- usa tu ID
+url = "https://drive.google.com/uc?export=download&id=1PXsvzUdr1NRLYRAijNmsW6_xXbxlmrWW"
 response = requests.get(url)
 df = pd.read_parquet(io.BytesIO(response.content))
 
